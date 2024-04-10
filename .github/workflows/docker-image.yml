@@ -21,4 +21,9 @@ jobs:
     - name: Docker login 
       run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PW }}
     - name: Build the Docker image
-      run: docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7  . -t sirchango/argo-mm-generator:${GITHUB_REF#refs/tags/} --push
+      run: |
+        docker buildx install 
+        docker buildx create --use
+        export DOCKER_BUILDKIT=1
+        docker buildx build --platform linux/amd64,linux/arm64,linux/arm/v7  . -t sirchango/argo-mm-generator:${GITHUB_REF#refs/tags/} --push
+
