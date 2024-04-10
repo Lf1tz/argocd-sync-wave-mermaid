@@ -20,11 +20,12 @@ def process_yaml_file(filepath):
                         wave = doc['metadata']['annotations']['argocd.argoproj.io/sync-wave']
                     name = doc['metadata']['name']
                     kind = doc['kind']
-                    
+                    namespace = doc['metadata'].get('namespace', 'default')  # Include namespace
+
                     # Add the resource to the appropriate sync wave
                     if wave not in sync_waves:
                         sync_waves[wave] = []
-                    sync_waves[wave].append(f"{kind}/{name}")
+                    sync_waves[wave].append(f"{namespace}/{kind}/{name}")
         except yaml.YAMLError as exc:
             print(f"Error processing {filepath}: {exc}")
 
