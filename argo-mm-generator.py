@@ -1,22 +1,4 @@
-def process_yaml_file(filepath):
-    with open(filepath, 'r') as file:
-        try:
-            # Load all documents from a YAML file
-            docs = yaml.safe_load_all(file)
-            for doc in docs:
-                if doc and 'metadata' in doc:
-                    wave = '1'  # Default sync wave
-                    if 'annotations' in doc['metadata'] and 'argocd.argoproj.io/sync-wave' in doc['metadata']['annotations']:
-                        wave = doc['metadata']['annotations']['argocd.argoproj.io/sync-wave']
-                    name = doc['metadata']['name']
-                    kind = doc['kind']
-                    
-                    # Add the resource to the appropriate sync wave
-                    if wave not in sync_waves:
-                        sync_waves[wave] = []
-                    sync_waves[wave].append(f"{kind}/{name}")
-        except yaml.YAMLError as exc:
-            print(f"Error processing {filepath}: {exc}")import os
+import os
 import yaml
 
 # Directory containing your Kubernetes manifests
@@ -32,8 +14,10 @@ def process_yaml_file(filepath):
             # Load all documents from a YAML file
             docs = yaml.safe_load_all(file)
             for doc in docs:
-                if doc and 'metadata' in doc and 'annotations' in doc['metadata'] and 'argocd.argoproj.io/sync-wave' in doc['metadata']['annotations']:
-                    wave = doc['metadata']['annotations']['argocd.argoproj.io/sync-wave']
+                if doc and 'metadata' in doc:
+                    wave = '1'  # Default sync wave
+                    if 'annotations' in doc['metadata'] and 'argocd.argoproj.io/sync-wave' in doc['metadata']['annotations']:
+                        wave = doc['metadata']['annotations']['argocd.argoproj.io/sync-wave']
                     name = doc['metadata']['name']
                     kind = doc['kind']
                     
